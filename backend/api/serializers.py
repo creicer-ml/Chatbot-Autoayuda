@@ -1,5 +1,12 @@
 from rest_framework import serializers
-from chatbot.models import Profesional, Paciente
+from chatbot.models import Profesional, Paciente, Reserva
+
+
+class ReservaSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Reserva
+        fields = "__all__"
 
 class ProfesionalSerializer(serializers.ModelSerializer):
 
