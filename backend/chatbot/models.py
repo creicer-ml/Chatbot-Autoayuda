@@ -15,6 +15,7 @@ class Especialidad(models.Model):
     def __str__(self):
         return self.nombre
 
+
 class Cesfam(models.Model):
     id_cesfam = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100, verbose_name="Nombre de CESFAM")
@@ -39,10 +40,10 @@ class Profesional(models.Model):
 class Paciente(models.Model):
     username = models.CharField(max_length=15, verbose_name="Nombre de usuario")
     rut = models.CharField(
-        max_length=9,
+        max_length=10,
         validators=[
             RegexValidator(
-                regex=r'^\d{7,8}-[\dkK]$',
+                regex=r'^\d{7,8}[Kk0-9]$',
                 message='Ingresa un RUT chileno válido sin dv (ej. 211409606).'
             ),
         ],
@@ -52,7 +53,18 @@ class Paciente(models.Model):
     profesionales_favoritos = models.ManyToManyField(Profesional, related_name='favoritos', blank=True)
     profesionales_bloqueados = models.ManyToManyField(Profesional, related_name='bloqueados', blank=True)
 
-
     def __str__(self):
         return self.username
     
+class Reserva(models.Model):
+    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    especialidad = models.ForeignKey(Especialidad, on_delete=models.CASCADE) 
+    profesional = models.ForeignKey(Profesional, on_delete=models.CASCADE)
+    fecha_atencion = models.DateField()
+    hora_atencion = models.TimeField()
+    fecha_solicitud_hora = models.DateField()
+    grabacion = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Reserva para {self.paciente}"
+
