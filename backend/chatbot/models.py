@@ -34,7 +34,7 @@ class Profesional(models.Model):
         verbose_name_plural = "Profesionales"
 
     def __str__(self):
-        return self.nombre
+        return f"{self.nombre} {self.apellido}"
     
 class Paciente(models.Model):
     username = models.CharField(max_length=15, verbose_name="Nombre de usuario")
@@ -49,6 +49,9 @@ class Paciente(models.Model):
         unique=True,
         verbose_name="RUT"
     )
+    profesionales_favoritos = models.ManyToManyField(Profesional, related_name='favoritos', blank=True)
+    profesionales_bloqueados = models.ManyToManyField(Profesional, related_name='bloqueados', blank=True)
+
 
     def __str__(self):
         return self.username
