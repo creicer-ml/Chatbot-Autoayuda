@@ -1,9 +1,14 @@
 from django.shortcuts import render
-from chatbot.models import Paciente, Reserva
+from chatbot.models import Paciente, Reserva, Cesfam
 from .serializers import PacienteSerializer, ReservaSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
+
+#Obtener profesionales 
+
+
+
 
 #Obtener reservas por RUT paciente
 @api_view(['GET'])
@@ -39,3 +44,29 @@ def filtrar_paciente_por_rut(request):
         return Response(serializer.data)
     else:
         return Response({'error': 'Parámetro de consulta "rut" no proporcionado.'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def actualizar_cesfam_paciente(request, paciente_rut):
+    try:
+        paciente = Paciente.objects.get(rut=paciente_rut)
+    except Paciente.DoesNotExist:
+        return Response({'error': 'No se encontró el paciente.'}, status=status.HTTP_404_NOT_FOUND)
+
+    cesfam_id_nuevo = request.data.get('cesfam_id', None)
+    
+    if cesfam_id_nuevo is not None:
+        try:
+            nuevo_cesfam = Cesfam.objects.get(pk=cesfam_id_nuevo)
+        except Cesfam.DoesNotExist:
+            return Response({'error': 'No se encontró el Cesfam.'}, status=status.HTTP_404_NOT_FOUND)
+
+        paciente.cesfam = nuevo_cesfam
+        paciente.save()
+
+        serializer = PacienteSerializer(paciente)
+        return Response(serializer.data)
+    else:
+        return Response({'error': 'Parámetro "cesfam_id" no proporcionado.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+

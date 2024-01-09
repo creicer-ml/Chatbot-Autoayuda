@@ -3,10 +3,15 @@ from chatbot.models import Profesional, Paciente, Reserva
 
 
 class ReservaSerializer(serializers.ModelSerializer):
+    paciente = serializers.ReadOnlyField(source='paciente.username')
+    especialidad = serializers.ReadOnlyField(source='especialidad.nombre')
+    profesional_nombre = serializers.ReadOnlyField(source='profesional.nombre')
+    profesional_apellido = serializers.ReadOnlyField(source='profesional.apellido')
+
 
     class Meta:
         model = Reserva
-        fields = "__all__"
+        fields = ['id', 'paciente', 'especialidad', 'profesional_nombre', 'profesional_apellido', 'fecha_atencion', 'hora_atencion', 'fecha_solicitud_hora', 'grabacion']
 
 class ProfesionalSerializer(serializers.ModelSerializer):
 
