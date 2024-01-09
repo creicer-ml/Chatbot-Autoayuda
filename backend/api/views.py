@@ -46,7 +46,11 @@ def obtener_detalle_reserva(request, id_reserva):
     except Reserva.DoesNotExist:
         return Response({'error': 'No se encontró ninguna reserva con el ID proporcionado.'}, status=status.HTTP_404_NOT_FOUND)
 
-
+@api_view(['GET'])
+def obtener_pacientes(request):
+    pacientes = Paciente.objects.all()
+    serializer = PacienteSerializer(pacientes, many=True)
+    return Response(serializer.data)
 
 #Filtrar datos de paciente por RUT
 @api_view(['GET'])

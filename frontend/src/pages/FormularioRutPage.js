@@ -4,6 +4,8 @@ import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
+import { usePaciente } from '../components/PacienteContext';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
 const FormularioRut = () => {
   const classes = useStyles();
   const [rut, setRut] = useState('');
-  const [paciente, setPaciente] = useState(null);
+  const { paciente, actualizarPaciente } = usePaciente();
+  const navigate = useNavigate();  // Mueve la declaración de useNavigate aquí
 
   const handleRutChange = (event) => {
     setRut(event.target.value);
@@ -39,10 +42,15 @@ const FormularioRut = () => {
   const buscarPaciente = async () => {
     try {
       const response = await axios.get(`/api/filtrar_paciente/?rut=${rut}`);
-      setPaciente(response.data[0]); // Tomamos el primer paciente encontrado
+      const pacienteEncontrado = response.data[0];
+
+      // Actualizar el contexto con la información del paciente
+      actualizarPaciente(pacienteEncontrado);
+      console.log('Paciente actualizado:', pacienteEncontrado);
+      navigate('/menu');
+
     } catch (error) {
       console.error('Error al buscar paciente por RUT', error);
-      setPaciente(null);
     }
   };
 

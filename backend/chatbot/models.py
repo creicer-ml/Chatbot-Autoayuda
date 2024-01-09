@@ -37,6 +37,18 @@ class Profesional(models.Model):
     def __str__(self):
         return f"{self.nombre} {self.apellido}"
     
+class Funcionario(models.Model):
+    id_funcionario = models.BigAutoField(primary_key=True)
+    username = models.CharField(max_length=50, verbose_name="Nombre de usuario del profesional")
+    nombre = models.CharField(max_length=50, verbose_name="Nombre del profesional")
+    apellido = models.CharField(max_length=50, verbose_name="Apellido del profesional")    
+
+    class Meta:
+        verbose_name_plural = "Funcionarios"
+
+    def __str__(self):
+        return f"{self.nombre} {self.apellido}"
+    
 class Paciente(models.Model):
     username = models.CharField(max_length=15, verbose_name="Nombre de usuario")
     rut = models.CharField(
@@ -57,7 +69,7 @@ class Paciente(models.Model):
         return self.username
     
 class Reserva(models.Model):
-    id_reserva = models.AutoField(primary_key=True)
+    id_reserva = models.BigAutoField(primary_key=True)
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     especialidad = models.ForeignKey(Especialidad, on_delete=models.CASCADE) 
     profesional = models.ForeignKey(Profesional, on_delete=models.CASCADE)
