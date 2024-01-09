@@ -1,15 +1,12 @@
 from django.shortcuts import render
 from chatbot.models import Paciente, Reserva, Cesfam
-from .serializers import PacienteSerializer, ReservaSerializer
+from .serializers import PacienteSerializer, ReservaSerializer, CesfamSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 
-#Obtener profesionales 
 
-
-
-
+        
 #Obtener reservas por RUT paciente
 @api_view(['GET'])
 def obtener_reservas_por_rut(request):
@@ -32,6 +29,24 @@ def listar_reservas(request):
     reservas = Reserva.objects.all()
     serializer = ReservaSerializer(reservas, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def obtener_cesfams(request):
+    cesfams = Cesfam.objects.all()
+    serializer = CesfamSerializer(cesfams, many=True)
+    return Response(serializer.data)
+
+#Mostrar reserva específica
+@api_view(['GET'])
+def obtener_detalle_reserva(request, id_reserva):
+    try:
+        reserva = Reserva.objects.get(id_reserva=id_reserva)
+        serializer = ReservaSerializer(reserva)
+        return Response(serializer.data)
+    except Reserva.DoesNotExist:
+        return Response({'error': 'No se encontró ninguna reserva con el ID proporcionado.'}, status=status.HTTP_404_NOT_FOUND)
+
+
 
 #Filtrar datos de paciente por RUT
 @api_view(['GET'])

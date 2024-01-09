@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from 'react'
+import { Link } from 'react-router-dom'
+
 
 const ConsultaReservasPage = () => {
 
@@ -9,7 +11,7 @@ const ConsultaReservasPage = () => {
   }, [])
 
   let obtenerReservas = async () => {
-    let response = await fetch("api/listar_reservas/")
+    let response = await fetch("/api/listar_reservas/")
     let data = await response.json()
     console.log("DATA:", data)
     setReservas(data)

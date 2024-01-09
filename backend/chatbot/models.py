@@ -57,6 +57,7 @@ class Paciente(models.Model):
         return self.username
     
 class Reserva(models.Model):
+    id_reserva = models.AutoField(primary_key=True)
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     especialidad = models.ForeignKey(Especialidad, on_delete=models.CASCADE) 
     profesional = models.ForeignKey(Profesional, on_delete=models.CASCADE)
