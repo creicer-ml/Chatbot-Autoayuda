@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Paper from '@material-ui/core/Paper';
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import MenuItem from '@material-ui/core/MenuItem';
 import axios from 'axios';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import { usePaciente } from '../components/PacienteContext';
+import { useNavigate } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,76 +26,112 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     maxWidth: 300,
   },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
   inputField: {
     margin: theme.spacing(2, 0),
   },
-  button: {
-    margin: theme.spacing(2, 0),
+  selectField: {
+    width: '100%',
+    marginBottom: theme.spacing(2),
   },
 }));
 
-const ActualizarCesfamForm = () => {
-  const classes = useStyles();
+const ModificarCesfamPage = () => {
+  const { paciente, actualizarPaciente } = usePaciente();
   const [cesfams, setCesfams] = useState([]);
-  const [selectedCesfam, setSelectedCesfam] = useState('');
+  const [sectores, setSectores] = useState([]);
+  const [nuevoCesfam, setNuevoCesfam] = useState('');
+  const [nuevoSector, setNuevoSector] = useState('');
+  const navigate = useNavigate();
+  const classes = useStyles();
 
   useEffect(() => {
-    obtenerCesfams();
-  }, []);
+    const fetchCesfams = async () => {
+      try {
+        const response = await axios.get('/api/obtener_cesfams/');
+        setCesfams(response.data);
+      } catch (error) {
+        console.error('Error al obtener la lista de CESFAM:', error);
+      }
+    };
 
-  const obtenerCesfams = async () => {
-    try {
-      const response = await axios.get('http://127.0.0.1:8000/api/obtener_cesfams/');
-      setCesfams(response.data);
-    } catch (error) {
-      console.error('Error al obtener los CESFAMs', error);
-    }
-  };
+    const fetchSectores = async () => {
+      try {
+        const response = await axios.get('/api/obtener_sectores/');
+        setSectores(response.data);
+      } catch (error) {
+        console.error('Error al obtener la lista de Sectores:', error);
+      }
+    };
+
+    fetchCesfams();
+    fetchSectores();
+  }, []);  
 
   const handleCesfamChange = (event) => {
-    setSelectedCesfam(event.target.value);
+    setNuevoCesfam(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSectorChange = (event) => {
+    setNuevoSector(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Implementa la lógica para enviar la actualización al servidor
-    console.log('Cesfam seleccionado:', selectedCesfam);
+
+    try {
+      await axios.put(`/api/actualizar_cesfam_paciente/${paciente.rut}/`, {
+        cesfam_id: nuevoCesfam,
+        sector_id: nuevoSector,
+      });
+
+      const nuevoCesfamNombre = cesfams.find(cesfam => cesfam.id_cesfam === nuevoCesfam).nombre;
+      const nuevoSectorNombre = sectores.find(sector => sector.id_sector === nuevoSector).nombre;
+
+      actualizarPaciente({ ...paciente, cesfam: nuevoCesfamNombre, sector: nuevoSectorNombre });
+
+      console.log('CESFAM y Sector actualizados exitosamente');
+      navigate('/menu');
+    } catch (error) {
+      console.error('Error al actualizar el CESFAM y Sector:', error);
+    }
   };
 
   return (
     <div className={classes.root}>
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={3}>
-          <h3>Actualizar CESFAM del paciente</h3>
-          <form className={classes.form} onSubmit={handleSubmit}>
-            <TextField
-              select
-              label="Seleccionar CESFAM"
-              value={selectedCesfam}
-              onChange={handleCesfamChange}
-              variant="outlined"
-              fullWidth
-              className={classes.inputField}
-            >
-              {cesfams.map((cesfam) => (
-                <MenuItem key={cesfam.id} value={cesfam.id}>
-                  {cesfam.nombre}
-                </MenuItem>
-              ))}
-            </TextField>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              className={classes.button}
-            >
-              Actualizar
+          <h3>Actualizar Cesfam del Paciente</h3>
+          <form onSubmit={handleSubmit}>
+            <div className={classes.inputField}>
+              <Select
+                id="nuevoCesfam"
+                className={classes.selectField}
+                value={nuevoCesfam}
+                onChange={handleCesfamChange}
+              >
+                {cesfams.map(cesfam => (
+                  <MenuItem key={cesfam.id_cesfam} value={cesfam.id_cesfam}>
+                    {cesfam.nombre}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+            <div className={classes.inputField}>
+              <Select
+                id="nuevoSector"
+                className={classes.selectField}
+                value={nuevoSector}
+                onChange={handleSectorChange}
+              >
+                {sectores.map(sector => (
+                  <MenuItem key={sector.id_sector} value={sector.id_sector}>
+                    {sector.nombre}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+            <Button variant="contained" color="primary" fullWidth type="submit">
+              Guardar
             </Button>
           </form>
         </Paper>
@@ -101,4 +140,4 @@ const ActualizarCesfamForm = () => {
   );
 };
 
-export default ActualizarCesfamForm;
+export default ModificarCesfamPage;

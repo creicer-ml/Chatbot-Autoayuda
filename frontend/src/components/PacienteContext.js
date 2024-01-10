@@ -1,6 +1,4 @@
-
-// PacienteContext.js
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const PacienteContext = createContext();
 
@@ -9,7 +7,19 @@ export const PacienteProvider = ({ children }) => {
 
   const actualizarPaciente = (nuevoPaciente) => {
     setPaciente(nuevoPaciente);
+    localStorage.setItem('paciente', JSON.stringify(nuevoPaciente));
   };
+
+  useEffect(() => {
+    try {
+      const pacienteGuardado = localStorage.getItem('paciente');
+      if (pacienteGuardado) {
+        setPaciente(JSON.parse(pacienteGuardado));
+      }
+    } catch (error) {
+      console.error('Error al analizar JSON en PacienteContext:', error);
+    }
+  }, []);
 
   return (
     <PacienteContext.Provider value={{ paciente, actualizarPaciente }}>

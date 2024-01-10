@@ -1,11 +1,25 @@
 from django.urls import path
-from .views import filtrar_paciente_por_rut, obtener_reservas_por_rut, listar_reservas, obtener_detalle_reserva, obtener_cesfams, obtener_pacientes
+from .views import *
 urlpatterns = [
     path('filtrar_paciente/', filtrar_paciente_por_rut, name='filtrar_paciente_por_rut'),
-
+    path('modificar_rut/<str:paciente_rut>/', modificar_rut, name='modificar_rut'),
     path('obtener_reservas/', obtener_reservas_por_rut, name='obtener_reservas_por_rut'),
+    path('obtener_profesionales/', obtener_profesionales, name='obtener_profesionales'),
+    path('obtener_especialidades/', obtener_especialidades, name='obtener_especialidades'),
+    path('obtener_detalle_reserva/<int:id_reserva>/', obtener_detalle_reserva, name='obtener_detalle_reserva'),
     path('obtener_pacientes/', obtener_pacientes, name='obtener_pacientes'),
     path('obtener_cesfams/', obtener_cesfams, name='obtener_cesfams'),
+    path('obtener_sectores/', obtener_sectores, name='obtener_sectores'),
+    path('actualizar_cesfam_paciente/<str:paciente_rut>/', actualizar_cesfam_paciente, name='actualizar_cesfam_paciente'),
+    path('actualizar_sector_paciente/<str:paciente_rut>/', actualizar_sector_paciente, name='actualizar_sector_paciente'),
     path('listar_reservas/', listar_reservas, name='listar_reservas'),
-    path('listar_reservas/<int:id_reserva>/', obtener_detalle_reserva, name='obtener_detalle_reserva'),
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
+    path('get-csrf-token/', get_csrf_token, name='get_csrf_token'),
+    path('mostrar_profesionales_favoritos/<str:paciente_rut>/', mostrar_profesionales_favoritos, name='mostrar_profesionales_favoritos'),
+    path('agregar_profesional_favorito/<str:paciente_rut>/<int:id_profesional>/', agregar_profesional_favorito, name='agregar_profesional_favorito'),
+    path('eliminar_profesional_favorito/<str:paciente_rut>/<int:id_profesional>/', eliminar_profesional_favorito, name='eliminar_profesional_favorito'),
+    path('mostrar_profesionales_bloqueados/<str:paciente_rut>/', mostrar_profesionales_bloqueados, name='mostrar_profesionales_bloqueados'),
+    path('bloquear_profesional/<str:paciente_rut>/<int:id_profesional>/', bloquear_profesional, name='bloquear_profesional'),
+    path('eliminar_profesional_bloqueado/<str:paciente_rut>/<int:id_profesional>/', eliminar_profesional_bloqueado, name="eliminar_profesional_bloqueado"),
 ]

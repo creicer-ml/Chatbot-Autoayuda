@@ -29,57 +29,51 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FormularioRut = () => {
+const ModificarRutPage = () => {
   const classes = useStyles();
-  const [rut, setRut] = useState('');
-  const { actualizarPaciente } = usePaciente();
-  const navigate = useNavigate();  // Mueve la declaración de useNavigate aquí
+  const [nuevoRut, setNuevoRut] = useState('');
+  const { paciente, actualizarPaciente } = usePaciente();
+  const navigate = useNavigate();
 
   const handleRutChange = (event) => {
-    setRut(event.target.value);
+    setNuevoRut(event.target.value);
   };
 
-  const buscarPaciente = async () => {
-    try {
-      const response = await axios.get(`/api/filtrar_paciente/?rut=${rut}`);
-      const pacienteEncontrado = response.data[0];
-
-      actualizarPaciente(pacienteEncontrado);
-      console.log('Paciente actualizado:', pacienteEncontrado);
-      navigate('/menu');
-
-    } catch (error) {
-      console.error('Error al buscar paciente por RUT', error);
-    }
-  };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    buscarPaciente();
+
+    try {
+      await axios.put(`/api/modificar_rut/${paciente.rut}/`, { nuevoRut });
+      actualizarPaciente({ ...paciente, rut: nuevoRut });
+      console.log('RUT modificado exitosamente');
+      navigate('/menu');
+    } catch (error) {
+      console.error('Error al modificar el RUT:', error);
+    }
   };
 
   return (
     <div className={classes.root}>
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={3}>
+          <h3>Ingresar RUT definitivo</h3>
           <form onSubmit={handleSubmit}>
             <TextField
               className={classes.inputField}
-              label="Ingrese RUT sin puntos ni guión"
+              label="Nuevo RUT sin puntos ni guión"
               variant="outlined"
               fullWidth
-              value={rut}
+              value={nuevoRut}
               onChange={handleRutChange}
             />
             <Button variant="contained" color="primary" fullWidth type="submit">
-              Buscar
+              Modificar RUT
             </Button>
           </form>
-
         </Paper>
       </div>
     </div>
   );
 };
 
-export default FormularioRut;
+export default ModificarRutPage;

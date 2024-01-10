@@ -1,55 +1,73 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-  },
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  paper: {
-    padding: theme.spacing(3),
-    textAlign: 'left', // Alineado a la izquierda
-    maxWidth: 300,
+    maxWidth: 500,
+    margin: 'auto',
+    marginTop: theme.spacing(6),
+    padding: theme.spacing(4),
+    cursor: 'pointer',
+    transition: 'transform 0.3s ease-in-out',
+    fontFamily: 'cursive',
+    '&:hover': {
+      transform: 'scale(1.05)',
+    },
   },
 }));
 
 const DetalleReservaPage = () => {
-  const { id } = useParams();
+  const { idReserva } = useParams();
+  const [reserva, setReserva] = useState(null);
   const classes = useStyles();
-  let [reserva, setReserva] = useState(null);
 
   useEffect(() => {
-    obtenerReserva();
-  }, [id]);
+    const fetchReserva = async () => {
+      try {
+        const response = await axios.get(`/api/obtener_detalle_reserva/${idReserva}/`);
+        setReserva(response.data);
+      } catch (error) {
+        console.error('Error al obtener detalle de la reserva:', error);
+      }
+    };
 
-  let obtenerReserva = async () => {
-    let response = await fetch(`/api/listar_reservas/${id}/`);
-    let data = await response.json();
-    setReserva(data);
-  };
+    fetchReserva();
+  }, [idReserva]);
 
   return (
-    <div className={classes.root}>
-      <div className={classes.container}>
-        <Paper className={classes.paper} elevation={3}>
-          <h3>Detalle de la hora médica</h3>
-          <p>Nombre Profesional: {reserva?.profesional_nombre} {reserva?.profesional_apellido} </p>
-          <p>Especialidad Profesional: {reserva?.especialidad}</p>
-          <p>Fecha de atención: {reserva?.fecha_solicitud_hora}</p>
-          <p>Hora de atención: {reserva?.hora_atencion} hrs</p>
-          <p>Fecha de solicitud de la hora: {reserva?.fecha_solicitud_hora} </p>
-          <p>Grabación: {reserva?.grabacion ? 'Disponible' : 'No Disponible'}</p>
-        </Paper>
-      </div>
+    <div>
+      <h2 style={{ textAlign: 'center' }}>DETALLES DE LA HORA MÉDICA</h2>
+      {reserva ? (
+        <Card className={classes.root}>
+          <CardContent>
+            <Typography variant="h5" component="div">
+              Especialidad del Profesional: {reserva?.especialidad}
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              Nombre profesional: {`${reserva?.profesional_nombre} ${reserva?.profesional_apellido}`}
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              Fecha de atención: {reserva?.fecha_atencion}
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              Hora de atención: {reserva?.hora_atencion}
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              Fecha de solicitud de la hora: {reserva?.fecha_solicitud_hora}
+            </Typography>
+            <Typography variant="body1" >
+              Grabación: {reserva?.grabacion ? 'Sí' : 'No'}
+            </Typography>
+          </CardContent>
+        </Card>
+      ) : (
+        <p>Cargando detalles de la reserva...</p>
+      )}
     </div>
   );
 };
