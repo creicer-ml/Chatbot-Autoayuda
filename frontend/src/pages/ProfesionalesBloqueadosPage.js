@@ -2,27 +2,17 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { usePaciente } from '../components/PacienteContext';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+import TablaProfesionales from '../components/TablaProfesionales';  // Import the TablaProfesionales component
+import Swal from 'sweetalert2';
+
 
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
-  },
-  tableRow: {
-    '&:hover': {
-      backgroundColor: '#f5f5f5',
-    },
   },
   formContainer: {
     display: 'flex',
@@ -39,6 +29,12 @@ const useStyles = makeStyles({
   },
   searchField: {
     marginLeft: 'auto',
+  },
+  tableRowEven: {
+    backgroundColor: '#f2f2f2', // or any other color for even rows
+  },
+  tableRowOdd: {
+    backgroundColor: '#ffffff', // or any other color for odd rows
   },
 });
 
@@ -90,9 +86,17 @@ const ProfesionalesBloqueadosPage = () => {
         throw new Error('Selecciona un paciente y un profesional antes de agregar.');
       }
 
+      const isProfesionalAlreadyAdded = profesionalesBloqueados.some(
+        (profesional) => profesional.id_profesional === profesionalSeleccionado
+      );
+  
+      if (isProfesionalAlreadyAdded) {
+        throw new Error('El profesional ya está agregado.');
+      }
+
       await axios.post(`/api/bloquear_profesional/${paciente.rut}/${profesionalSeleccionado}/`);
-      setProfesionalSeleccionado(''); 
-      setErrorAgregar(''); 
+      setProfesionalSeleccionado('');
+      setErrorAgregar('');
       fetchProfesionalesBloqueados();
     } catch (error) {
       console.error('Error al agregar profesional bloqueado:', error);
@@ -102,10 +106,35 @@ const ProfesionalesBloqueadosPage = () => {
 
   const handleEliminarProfesional = async (idProfesional) => {
     try {
-      await axios.delete(`/api/eliminar_profesional_bloqueado/${paciente.rut}/${idProfesional}/`);
-      fetchProfesionalesBloqueados();
+      const confirmacion = await Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+      });
+  
+      if (confirmacion.isConfirmed) {
+        await axios.delete(`/api/eliminar_profesional_bloqueado/${paciente.rut}/${idProfesional}/`);
+        fetchProfesionalesBloqueados();
+        await Swal.fire({
+          title: 'Eliminado',
+          text: 'El profesional ha sido eliminado exitosamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+        });
+      }
     } catch (error) {
       console.error('Error al eliminar profesional bloqueado:', error);
+      await Swal.fire({
+        title: 'Error',
+        text: 'Hubo un problema durante la eliminación.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+      });
     }
   };
 
@@ -157,30 +186,11 @@ const ProfesionalesBloqueadosPage = () => {
         </div>
       )}
       <h2>Profesionales bloqueados de {paciente.username}</h2>
-      <TableContainer>
-        <Table className={classes.table} aria-label="Profesionales Bloqueados Table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Especialidad</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredProfesionales.map((profesional) => (
-              <TableRow key={profesional.id_profesional} className={classes.tableRow}>
-                <TableCell>{`${profesional.nombre} ${profesional.apellido}`}</TableCell>
-                <TableCell>{profesional.especialidad_nombre}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEliminarProfesional(profesional.id_profesional)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <TablaProfesionales
+        profesionales={filteredProfesionales}
+        handleEliminarProfesional={handleEliminarProfesional}
+        classes={classes}
+      />
     </div>
   );
 };

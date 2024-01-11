@@ -12,6 +12,8 @@ import ProfesionalesFavoritosPage from './pages/ProfesionalesFavoritosPage';
 import ProfesionalesBloqueadosPage from './pages/ProfesionalesBloqueadosPage';
 import ModificarRutPage from './pages/RutDefinitivoPage';
 import OtrasConsultasForm from './pages/FormularioConsulta';
+import EstadoInscripcionPage from './pages/CallCenterPage';
+import ProblemasAppPage from './pages/ProblemasAppPage';
 
 function App() {
   return (
@@ -24,12 +26,16 @@ function App() {
             <Route path="/form_rut" element={<FormularioRut />} />
             <Route path="/modificar_rut" element={<ModificarRutPage />} />
             <Route path="/otras_consultas" element={<OtrasConsultasForm />} />
-            <Route path="/menu" element={<Menu />} />
+            <Route path="/call_center" element={<EstadoInscripcionPage/>} />
+s           <Route path="/menu" element={<Menu/>} />
             <Route path="/obtener_reservas/:rut" element={<ConsultaReservasPage />} />
             <Route path="/detalle_reserva/:idReserva" element={<DetalleReservaPage />} />
             <Route path="/form_cesfam" element={<ActualizarCesfamForm />} />
             <Route path="/profesionales_favoritos/:rut" element={<ProfesionalesFavoritosPage/>}/>
             <Route path="/profesionales_bloqueados/:rut" element={<ProfesionalesBloqueadosPage/>}/>
+            <Route path="/problemas_app" element={<ProblemasAppPage/>}/>
+
+            
           </Routes>
         </div>
       </PacienteProvider>

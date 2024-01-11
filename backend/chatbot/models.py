@@ -48,6 +48,7 @@ class Profesional(models.Model):
 class Paciente(models.Model):
    id_paciente = models.BigAutoField(primary_key=True)
    username = models.CharField(max_length=15, verbose_name="Nombre de usuario")
+   nombre_completo = models.CharField(max_length=20, verbose_name="Nombre del paciente")
    rut = models.CharField(
        max_length=10,
        validators=[
@@ -63,9 +64,12 @@ class Paciente(models.Model):
    profesionales_bloqueados = models.ManyToManyField(Profesional, related_name='bloqueados', blank=True)
    cesfam = models.ForeignKey(Cesfam, on_delete=models.CASCADE)
    sector = models.ForeignKey(Sector, on_delete=models.CASCADE)
+   inscrito_hs = models.BooleanField(default=False, verbose_name="Marcar si está inscrito en HoraSalud")
 
    def __str__(self):
        return self.username
+   
+
   
 class Reserva(models.Model):
    id_reserva = models.AutoField(primary_key=True)

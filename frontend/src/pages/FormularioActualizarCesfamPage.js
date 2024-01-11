@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginBottom: theme.spacing(2),
   },
+  inputError: {
+    border: '1px solid red',
+  },
 }));
 
 const ModificarCesfamPage = () => {
@@ -41,6 +44,7 @@ const ModificarCesfamPage = () => {
   const [sectores, setSectores] = useState([]);
   const [nuevoCesfam, setNuevoCesfam] = useState('');
   const [nuevoSector, setNuevoSector] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   const classes = useStyles();
 
@@ -69,16 +73,22 @@ const ModificarCesfamPage = () => {
 
   const handleCesfamChange = (event) => {
     setNuevoCesfam(event.target.value);
+    setError('');
   };
 
   const handleSectorChange = (event) => {
     setNuevoSector(event.target.value);
+    setError('');
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
+      if (!nuevoCesfam || !nuevoSector) {
+        throw new Error('Debe seleccionar Cesfam y Sector antes de guardar.');
+      }
+
       await axios.put(`/api/actualizar_cesfam_paciente/${paciente.rut}/`, {
         cesfam_id: nuevoCesfam,
         sector_id: nuevoSector,
@@ -93,6 +103,7 @@ const ModificarCesfamPage = () => {
       navigate('/menu');
     } catch (error) {
       console.error('Error al actualizar el CESFAM y Sector:', error);
+      setError(error.message);
     }
   };
 
@@ -103,9 +114,10 @@ const ModificarCesfamPage = () => {
           <h3>Actualizar Cesfam del Paciente</h3>
           <form onSubmit={handleSubmit}>
             <div className={classes.inputField}>
+              <label htmlFor="nuevoCesfam">Seleccionar Cesfam</label>
               <Select
                 id="nuevoCesfam"
-                className={classes.selectField}
+                className={`${classes.selectField} ${error && !nuevoCesfam ? classes.inputError : ''}`}
                 value={nuevoCesfam}
                 onChange={handleCesfamChange}
               >
@@ -117,9 +129,10 @@ const ModificarCesfamPage = () => {
               </Select>
             </div>
             <div className={classes.inputField}>
+              <label htmlFor="nuevoSector">Seleccionar Sector</label>
               <Select
                 id="nuevoSector"
-                className={classes.selectField}
+                className={`${classes.selectField} ${error && !nuevoSector ? classes.inputError : ''}`}
                 value={nuevoSector}
                 onChange={handleSectorChange}
               >
@@ -130,6 +143,7 @@ const ModificarCesfamPage = () => {
                 ))}
               </Select>
             </div>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <Button variant="contained" color="primary" fullWidth type="submit">
               Guardar
             </Button>

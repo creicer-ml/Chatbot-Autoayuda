@@ -34,7 +34,7 @@ class PacienteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Paciente
-        fields = ['id_paciente', 'username', 'rut', 'profesionales_favoritos', 'profesionales_bloqueados', 'cesfam', 'sector']
+        fields = ['id_paciente', 'username', 'rut', 'nombre_completo', 'profesionales_favoritos', 'profesionales_bloqueados', 'cesfam', 'sector', 'inscrito_hs']
 
 class CesfamSerializer(serializers.ModelSerializer):
     class Meta:

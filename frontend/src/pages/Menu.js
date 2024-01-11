@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-around',
     margin: theme.spacing(2),
     borderRadius: theme.spacing(2),
-    backgroundColor: '#616F71',
+    backgroundColor: '#1b85b8',
   },
   button: {
     fontFamily: 'cursive',
@@ -64,6 +64,10 @@ const Menu = () => {
     }
   };
 
+  const handleCallCenter = () => {
+    navigate('/call_center')
+  }
+
   const handleOtrasConsultas = () => {
     navigate('/otras_consultas')
   }
@@ -78,6 +82,10 @@ const Menu = () => {
 
   const handleActualizarCesfam = () => {
     navigate('/form_cesfam')
+  }
+
+  const handleProblemas = () => {
+    navigate('/problemas_app')
   }
 
   const formatearRut = (rut) => {
@@ -99,7 +107,7 @@ const Menu = () => {
             <div>
               <p>RUT {formatearRut(paciente.rut)}, {paciente.cesfam}</p>
               <div className={classes.menuItem}>
-                <Button className={classes.button}> CALL CENTER NO RECONOCE RUT</Button>
+                <Button className={classes.button} onClick={handleCallCenter}> CALL CENTER NO RECONOCE RUT</Button>
               </div>
               <div className={classes.menuItem}>
                 <Button className={classes.button} onClick={handleActualizarCesfam}> ACTUALIZAR CESFAM </Button>
@@ -120,7 +128,7 @@ const Menu = () => {
                 <Button className={classes.button}> SOLICITUD DE GRABACIONES</Button>
               </div>
               <div className={classes.menuItem}>
-                <Button className={classes.button}> PROBLEMAS CON APP </Button>
+                <Button className={classes.button} onClick={handleProblemas} > PROBLEMAS CON APP </Button>
               </div>
               <div className={classes.menuItem}>
                 <Button className={classes.button} onClick={handleOtrasConsultas}> OTRAS CONSULTAS </Button>

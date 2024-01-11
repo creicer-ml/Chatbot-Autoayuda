@@ -33,6 +33,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'chatbot',
     'corsheaders',
+    'rest_framework_swagger',
+    'drf_yasg',
     'rest_framework',
     'rest_framework_simplejwt',
     'django.contrib.admin',

@@ -27,26 +27,37 @@ const useStyles = makeStyles((theme) => ({
   inputField: {
     margin: theme.spacing(2, 0),
   },
+  errorText: {
+    color: 'red',
+    margin: theme.spacing(1, 0),
+  },
 }));
 
 const ModificarRutPage = () => {
   const classes = useStyles();
   const [nuevoRut, setNuevoRut] = useState('');
+  const [errorRut, setErrorRut] = useState('');
   const { paciente, actualizarPaciente } = usePaciente();
   const navigate = useNavigate();
 
   const handleRutChange = (event) => {
     setNuevoRut(event.target.value);
+    setErrorRut('');
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      await axios.put(`/api/modificar_rut/${paciente.rut}/`, { nuevoRut });
-      actualizarPaciente({ ...paciente, rut: nuevoRut });
-      console.log('RUT modificado exitosamente');
-      navigate('/menu');
+      const response = await axios.get(`/api/verificar_existencia_rut/${nuevoRut}/`);
+      if (response.data.existe) {
+        setErrorRut('El RUT ingresado ya existe.');
+      } else {
+        await axios.put(`/api/modificar_rut/${paciente.rut}/`, { nuevoRut });
+        actualizarPaciente({ ...paciente, rut: nuevoRut });
+        console.log('RUT modificado exitosamente');
+        navigate('/menu');
+      }
     } catch (error) {
       console.error('Error al modificar el RUT:', error);
     }
@@ -65,7 +76,9 @@ const ModificarRutPage = () => {
               fullWidth
               value={nuevoRut}
               onChange={handleRutChange}
+              error={Boolean(errorRut)}
             />
+            {errorRut && <p className={classes.errorText}>{errorRut}</p>}
             <Button variant="contained" color="primary" fullWidth type="submit">
               Modificar RUT
             </Button>
@@ -77,3 +90,4 @@ const ModificarRutPage = () => {
 };
 
 export default ModificarRutPage;
+

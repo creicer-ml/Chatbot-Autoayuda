@@ -111,6 +111,19 @@ def filtrar_paciente_por_rut(request):
     else:
         return Response({'error': 'Parámetro de consulta "rut" no proporcionado.'}, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def verificar_existencia_rut(request, rut):
+    print(f"Verificando existencia para RUT: {rut}")
+    try:
+        paciente = Paciente.objects.get(rut=rut)
+        existe = True
+    except Paciente.DoesNotExist:
+        existe = False
+
+    return JsonResponse({'existe': existe})
+
+
+
 @api_view(['PUT'])
 def modificar_rut(request, paciente_rut):
     nuevo_rut = request.data.get('nuevoRut', None)

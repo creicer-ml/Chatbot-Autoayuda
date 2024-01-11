@@ -21,6 +21,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
     textAlign: 'center',
     maxWidth: 300,
+    border: '1px solid #ccc', // Añade un borde al Paper
+    borderRadius: '8px', // Agrega esquinas redondeadas
   },
   selectField: {
     width: '100%',
@@ -35,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 const OtrasConsultasForm = () => {
   const [tipoConsulta, setTipoConsulta] = useState('');
   const [descripcionConsulta, setDescripcionConsulta] = useState('');
+  const [isEnviando, setIsEnviando] = useState(false); // Nuevo estado
   const navigate = useNavigate();
   const { paciente } = usePaciente();
   const classes = useStyles();
@@ -49,23 +52,27 @@ const OtrasConsultasForm = () => {
 
   const form = useRef();
 
-  const sendEmail = (e) => {
+  const sendEmail = async (e) => {
     e.preventDefault();
 
-    emailjs
-      .sendForm('service_dyy37mu', 'template_lomvtel', form.current, 'GVJtnvZaQCi4DTgrG')
-      .then(
-        (result) => {
-          console.log(result.text);
-          console.log("Mensaje enviado exitosamente");
-          // Puedes realizar más acciones aquí después de un envío exitoso
-          navigate('/menu');
-        },
-        (error) => {
-          console.log(error.text);
-          console.error("Error al enviar el mensaje");
-        }
-      );
+    if (isEnviando) {
+      // Si ya está enviando, no hagas nada
+      return;
+    }
+
+    setIsEnviando(true);
+
+    try {
+      const result = await emailjs.sendForm('service_dyy37mu', 'template_lomvtel', form.current, 'GVJtnvZaQCi4DTgrG');
+      console.log(result.text);
+      console.log("Mensaje enviado exitosamente");
+      navigate('/menu');
+    } catch (error) {
+      console.error(error.text);
+      console.error("Error al enviar el mensaje");
+    } finally {
+      setIsEnviando(false);
+    }
   };
 
   return (
@@ -101,8 +108,9 @@ const OtrasConsultasForm = () => {
               variant="contained"
               color="primary"
               fullWidth
+              disabled={isEnviando} // Deshabilita el botón mientras se está enviando
             >
-              Enviar Consulta
+              {isEnviando ? 'Enviando...' : 'Enviar Consulta'}
             </Button>
           </form>
         </div>

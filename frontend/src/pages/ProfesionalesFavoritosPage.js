@@ -2,18 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { usePaciente } from '../components/PacienteContext';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+import TablaProfesionales from '../components/TablaProfesionales';
 
 const useStyles = makeStyles({
   table: {
@@ -39,6 +32,12 @@ const useStyles = makeStyles({
   },
   searchField: {
     marginLeft: 'auto',
+  },
+  tableRowEven: {
+    backgroundColor: '#f2f2f2', // or any other color for even rows
+  },
+  tableRowOdd: {
+    backgroundColor: '#ffffff', // or any other color for odd rows
   },
 });
 
@@ -157,30 +156,11 @@ const ProfesionalesFavoritosPage = () => {
         </div>
       )}
       <h2>Profesionales favoritos de {paciente.username}</h2>
-      <TableContainer>
-        <Table className={classes.table} aria-label="Profesionales Favoritos Table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Especialidad</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredProfesionales.map((profesional) => (
-              <TableRow key={profesional.id_profesional} className={classes.tableRow}>
-                <TableCell>{`${profesional.nombre} ${profesional.apellido}`}</TableCell>
-                <TableCell>{profesional.especialidad_nombre}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEliminarProfesional(profesional.id_profesional)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <TablaProfesionales
+        profesionales={filteredProfesionales}
+        handleEliminarProfesional={handleEliminarProfesional}
+        classes={classes}
+      />
     </div>
   );
 };
