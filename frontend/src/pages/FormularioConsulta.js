@@ -4,6 +4,7 @@ import { Button, MenuItem, Select, TextField } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { usePaciente } from '../components/PacienteContext';
 import { makeStyles } from '@material-ui/core/styles';
+import Swal from 'sweetalert2';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,24 +57,35 @@ const OtrasConsultasForm = () => {
     e.preventDefault();
 
     if (isEnviando) {
-      // Si ya está enviando, no hagas nada
       return;
     }
 
     setIsEnviando(true);
 
     try {
-      const result = await emailjs.sendForm('service_dyy37mu', 'template_lomvtel', form.current, 'GVJtnvZaQCi4DTgrG');
-      console.log(result.text);
+      await emailjs.sendForm('service_dyy37mu', 'template_lomvtel', form.current, 'GVJtnvZaQCi4DTgrG');
       console.log("Mensaje enviado exitosamente");
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Consulta enviada',
+        text: 'Tu consulta se ha enviado exitosamente.',
+      });
+
       navigate('/menu');
     } catch (error) {
-      console.error(error.text);
       console.error("Error al enviar el mensaje");
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un problema al enviar tu consulta. Por favor, inténtalo de nuevo más tarde.',
+      });
     } finally {
       setIsEnviando(false);
     }
   };
+
 
   return (
     <div className={classes.root}>
@@ -108,7 +120,7 @@ const OtrasConsultasForm = () => {
               variant="contained"
               color="primary"
               fullWidth
-              disabled={isEnviando} // Deshabilita el botón mientras se está enviando
+              disabled={isEnviando} 
             >
               {isEnviando ? 'Enviando...' : 'Enviar Consulta'}
             </Button>

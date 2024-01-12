@@ -11,7 +11,7 @@ class ReservaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Reserva
-        fields = ['id_reserva', 'paciente', 'especialidad', 'profesional_nombre', 'profesional_apellido', 'fecha_atencion', 'hora_atencion', 'fecha_solicitud_hora', 'grabacion']
+        fields = ['id_reserva', 'paciente', 'especialidad', 'profesional_nombre', 'profesional_apellido', 'fecha_atencion', 'hora_atencion', 'fecha_solicitud_hora', 'grabacion', 'archivo_audio']
 
 class ProfesionalSerializer(serializers.ModelSerializer):
     especialidad_nombre = serializers.SerializerMethodField()

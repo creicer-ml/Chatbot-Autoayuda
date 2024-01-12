@@ -5,6 +5,11 @@ import { usePaciente } from '../components/PacienteContext';
 import Button from '@material-ui/core/Button';
 import { useNavigate } from 'react-router-dom';
 
+const hoverStyles = {
+  backgroundColor: '#FFA000',
+  transition: 'background-color 0.3s ease-in-out',
+};
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -13,10 +18,12 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
   },
   container: {
+    width: '80%', // Modificar el ancho según sea necesario
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
+    marginTop: theme.spacing(2),
   },
   paper: {
     padding: theme.spacing(3),
@@ -24,20 +31,27 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 700,
     fontFamily: 'cursive',
   },
-  menuItem: {
+  menuItemContainer: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    marginTop: theme.spacing(2),
+  },
+  menuItem: {
+    display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'space-around',
     margin: theme.spacing(2),
     borderRadius: theme.spacing(2),
-    backgroundColor: '#1b85b8',
+    backgroundColor: '#FFAB40',
+    '&:hover': hoverStyles, // Aplica los estilos hover al pasar el ratón
   },
   button: {
     fontFamily: 'cursive',
-    color: 'white'
+    color: 'white',
   },
 }));
-
 const Menu = () => {
   const classes = useStyles();
   const { paciente } = usePaciente();
@@ -80,6 +94,10 @@ const Menu = () => {
     navigate('/form_rut')
   }
 
+  const handleGrabaciones = () => {
+    navigate('/grabaciones')
+  }
+
   const handleActualizarCesfam = () => {
     navigate('/form_cesfam')
   }
@@ -101,6 +119,7 @@ const Menu = () => {
 
   return (
     <div className={classes.root}>
+      
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={6}>
           {paciente ? (
@@ -110,22 +129,23 @@ const Menu = () => {
                 <Button className={classes.button} onClick={handleCallCenter}> CALL CENTER NO RECONOCE RUT</Button>
               </div>
               <div className={classes.menuItem}>
-                <Button className={classes.button} onClick={handleActualizarCesfam}> ACTUALIZAR CESFAM </Button>
+                <Button className={classes.button} onClick={handleActualizarCesfam}>  ACTUALIZAR CESFAM </Button>
+
               </div>
               <div className={classes.menuItem}>
                 <Button className={classes.button} onClick={handleModificarRut}> INGRESAR RUT DEFINITIVO </Button>
               </div>
               <div className={classes.menuItem}>
-                <Button className={classes.button} onClick={handleProfesionalesFavoritos}> GESTIONAR PROFESIONALES FAVORITOS </Button>
+                <Button className={classes.button} onClick={handleProfesionalesFavoritos}> PROFESIONALES FAVORITOS </Button>
               </div>
               <div className={classes.menuItem}>
-                <Button className={classes.button} onClick={handleProfesionalesBloqueados}> GESTIONAR PROFESIONALES BLOQUEADOS </Button>
+                <Button className={classes.button} onClick={handleProfesionalesBloqueados}> PROFESIONALES BLOQUEADOS </Button>
               </div>
               <div className={classes.menuItem}>
                 <Button className={classes.button} onClick={handleReservas}> CONSULTAR HORAS RESERVADAS </Button>
               </div>
               <div className={classes.menuItem}>
-                <Button className={classes.button}> SOLICITUD DE GRABACIONES</Button>
+                <Button className={classes.button} onClick={handleGrabaciones}> SOLICITUD DE GRABACIONES</Button>
               </div>
               <div className={classes.menuItem}>
                 <Button className={classes.button} onClick={handleProblemas} > PROBLEMAS CON APP </Button>

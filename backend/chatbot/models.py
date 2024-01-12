@@ -80,6 +80,8 @@ class Reserva(models.Model):
    hora_atencion = models.TimeField()
    fecha_solicitud_hora = models.DateField()
    grabacion = models.BooleanField(default=False)
+   archivo_audio = models.FileField(upload_to='archivos_audio/', blank=True, null=True)
+
 
    def __str__(self):
        return f"Reserva para {self.paciente.username}"

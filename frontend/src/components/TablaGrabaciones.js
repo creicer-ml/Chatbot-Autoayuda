@@ -6,31 +6,34 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
-const TablaProfesionales = ({ profesionales, handleEliminarProfesional, classes }) => {
+const TablaGrabaciones = ({ reservas, classes }) => {
   return (
     <TableContainer>
-      <Table sx={{ minWidth: 650, border: '1px solid #ddd', margin: '10px 0' }} size="small" className={classes.table} aria-label="Profesionales Table">
+      <Table sx={{ minWidth: 650, border: '1px solid #ddd', margin: '10px 0' }} size="small" aria-label="Grabaciones Table">
         <TableHead>
           <TableRow style={{ backgroundColor: '#1b85b8' }}>
-            <TableCell style={{ fontWeight: 'bold' }}>Nombre</TableCell>
             <TableCell style={{ fontWeight: 'bold' }}>Especialidad</TableCell>
-            <TableCell style={{ fontWeight: 'bold' }}>Acciones</TableCell>
+            <TableCell style={{ fontWeight: 'bold' }}>Fecha</TableCell>
+            <TableCell style={{ fontWeight: 'bold' }}>Grabación</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {profesionales.map((profesional, index) => (
+          {reservas.map((reserva, index) => (
             <TableRow
-              key={profesional.id_profesional}
+              key={reserva.id_reserva}
               className={index % 2 === 0 ? classes.tableRowEven : classes.tableRowOdd}
             >
-              <TableCell>{`${profesional.nombre} ${profesional.apellido}`}</TableCell>
-              <TableCell>{profesional.especialidad_nombre}</TableCell>
+              <TableCell>{reserva?.especialidad}</TableCell>
+              <TableCell>{reserva?.fecha_atencion}</TableCell>
               <TableCell>
-                <IconButton onClick={() => handleEliminarProfesional(profesional.id_profesional)}>
-                  <DeleteIcon />
-                </IconButton>
+                {reserva.grabacion && (
+                  <audio controls>
+                    <source src={reserva.archivo_audio} type="audio/mpeg" />
+                    Tu navegador no soporta el elemento de audio.
+                  </audio>
+                )}
               </TableCell>
             </TableRow>
           ))}
@@ -40,4 +43,4 @@ const TablaProfesionales = ({ profesionales, handleEliminarProfesional, classes 
   );
 };
 
-export default TablaProfesionales;
+export default TablaGrabaciones;

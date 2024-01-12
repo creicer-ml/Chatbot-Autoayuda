@@ -30,12 +30,12 @@ const ProblemasAppPage = () => {
   const classes = useStyles();
   const navigate = useNavigate();
 
-  const handleCallCenter = () => {
+  const handleForgotPassword = () => {
     navigate('/call_center');
   };
 
-  const handleActualizarCesfam = () => {
-    navigate('/form_cesfam');
+  const handleAppNoFunciona = () => {
+    navigate('/app_no_funciona');
   };
 
   return (
@@ -44,13 +44,13 @@ const ProblemasAppPage = () => {
         <Paper className={classes.paper} elevation={6}>
           <div>
             <div className={classes.menuItem}>
-              <Button className={classes.button} onClick={handleCallCenter}>
-                CALL CENTER NO RECONOCE RUT
+              <Button className={classes.button} onClick={handleForgotPassword}>
+                NO RECUERDA SU CONTRASEÑA
               </Button>
             </div>
             <div className={classes.menuItem}>
-              <Button className={classes.button} onClick={handleActualizarCesfam}>
-                ACTUALIZAR CESFAM
+              <Button className={classes.button} onClick={handleAppNoFunciona}>
+                LA APP NO FUNCIONA O NO ABRE
               </Button>
             </div>
           </div>

@@ -155,7 +155,7 @@ const ProfesionalesFavoritosPage = () => {
           {errorAgregar}
         </div>
       )}
-      <h2>Profesionales favoritos de {paciente.username}</h2>
+      <h1>Profesionales favoritos de {paciente.nombre_completo}</h1>
       <TablaProfesionales
         profesionales={filteredProfesionales}
         handleEliminarProfesional={handleEliminarProfesional}
